@@ -1,11 +1,11 @@
-import { applyClue } from "../../../../Shared/game-engine/applyClue.js";
-import { selectWord } from "../../../../shared/game-engine/selectWord.js";
+import { applyClue } from "../../game-engine/applyClue.js";
+import { selectWord } from "../../game-engine/selectWord.js";
 import { getIO } from "../index.js";
 import RoomManager from "../../rooms/RoomManager.js";
 import { SOCKET_EVENTS } from "../events.js";
-import { createGame } from "../../../../Shared/game-engine/createGame.js";
-import ar_words from "../../../../Shared/words/ar-words.js";
-import { endTurn } from "../../../../shared/game-engine/endTurn.js";
+import { createGame } from "../../game-engine/createGame.js";
+import ar_words from "../../words/ar-words.js";
+import { endTurn } from "../../game-engine/endTurn.js";
 
 export function buildSafeRoom(room, playerId) {
   const player = room.players.find((p) => p.id === playerId);
