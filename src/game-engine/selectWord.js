@@ -1,5 +1,5 @@
-import { GAME_PHASES } from "../../../Shared/constants.js";
-import { generateCurrentLog } from "../../../Shared/utils/generateLogs.js";
+import { GAME_PHASES } from "../constants.js";
+import { generateCurrentLog } from "../utils/generateLogs.js";
 import { endTurn } from "./endTurn.js";
 
 export function selectWord(game, player, cardId) {

@@ -1,4 +1,4 @@
-import { GAME_PHASES } from "../../Shared/constants.js";
+import { GAME_PHASES } from "../constants.js";
 import { generateCurrentLog } from "../utils/generateLogs.js";
 
 export function applyClue(game, player, clueWord, number) {

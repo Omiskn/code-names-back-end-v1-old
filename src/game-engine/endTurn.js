@@ -1,4 +1,4 @@
-import { GAME_PHASES } from "../../../Shared/constants.js";
+import { GAME_PHASES } from "../constants.js";
 
 export function endTurn(game) {
   if (game.winner) {
