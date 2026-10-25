@@ -2,6 +2,14 @@
 
 Authoritative real-time Node.js and Socket.IO game server for Code Names multiplayer.
 
+## About the Game
+
+**Code Names** is a word-association deduction game between two teams: **Red** and **Blue**.
+- **The Board:** A 5×5 grid of 25 word cards representing team agents, neutral bystanders, and one assassin.
+- **Spymasters:** See the secret identities of all cards and give a one-word clue plus a number.
+- **Operatives:** Work together to guess their team's cards based on the clue.
+- **How to Win:** The first team to reveal all their agents wins. Uncovering the assassin card causes an immediate loss!
+
 ## Features
 
 - Authoritative game logic: 25-word board generation, random first team (9 cards vs 8 cards), neutral cards (7), and assassin (1).
