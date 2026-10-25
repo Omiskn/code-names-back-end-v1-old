@@ -44,19 +44,30 @@ export function roomSocketHandlers(socket) {
     getIO().to(roomId).emit(SOCKET_EVENTS.ROOM_UPDATE, room.players);
   });
 
-  socket.on(SOCKET_EVENTS.JOIN_ROOM, ({ playerId, roomId, playerName }) => {
-    if (!roomId || !playerId || !playerName) return;
+  socket.on(
+    SOCKET_EVENTS.JOIN_ROOM,
+    ({ playerId, roomId, playerName }, callback) => {
+      if (!roomId || !playerId || !playerName) {
+        const err = "Please provide your name and room code.";
+        socket.emit("room_error", err);
+        if (typeof callback === "function") callback({ error: err });
+        return;
+      }
 
-    const room = RoomManager.getRoom(roomId);
-    if (!room) {
-      socket.emit("room_error", "This room does not exist!");
-      return;
+      const room = RoomManager.getRoom(roomId);
+      if (!room) {
+        const err = "This room does not exist!";
+        socket.emit("room_error", err);
+        if (typeof callback === "function") callback({ error: err });
+        return;
+      }
+
+      room.addPlayer({ playerId, socketId: socket.id, name: playerName });
+      socket.join(roomId);
+      getIO().to(roomId).emit(SOCKET_EVENTS.ROOM_UPDATE, room.players);
+      if (typeof callback === "function") callback({ success: true });
     }
-
-    room.addPlayer({ playerId, socketId: socket.id, name: playerName });
-    socket.join(roomId);
-    getIO().to(roomId).emit(SOCKET_EVENTS.ROOM_UPDATE, room.players);
-  });
+  );
 
   // Select team
   socket.on(SOCKET_EVENTS.SELECT_TEAM, ({ roomId, playerId, team }) => {

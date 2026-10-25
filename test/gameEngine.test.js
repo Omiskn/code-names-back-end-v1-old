@@ -130,4 +130,16 @@ describe("Codenames Core Game Engine & Rules", () => {
     assert.equal(game.clue, null);
     assert.equal(game.guessesLeft, 0);
   });
+
+  test("room safety: non-existent room cannot be retrieved or joined", () => {
+    const nonExistent = RoomManager.getRoom("invalid-room-999");
+    assert.equal(nonExistent, undefined);
+
+    const added = RoomManager.addPlayer("invalid-room-999", {
+      playerId: "p1",
+      socketId: "s1",
+      name: "Player 1",
+    });
+    assert.equal(added, undefined);
+  });
 });
