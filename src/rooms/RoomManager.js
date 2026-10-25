@@ -23,14 +23,8 @@ class Room {
     const existing = this.players.find((p) => p.id === playerId);
 
     if (existing) {
-      // رجع حدث السوكيت فقط (إعادة اتصال)
-
-      if (existing.socketId) {
-        return existing;
-      }
-
       existing.socketId = socketId;
-      existing.name = name;
+      if (name) existing.name = name;
       return existing;
     }
 
@@ -45,39 +39,62 @@ class Room {
 
   setPlayerTeam(playerId, team) {
     const player = this.players.find((p) => p.id === playerId);
-    if (player) player.team = team;
+    if (player) {
+      player.team = team ? team.toLowerCase() : null;
+      player.isReady = false;
+    }
   }
 
   setPlayerRole(playerId, role) {
     const player = this.players.find((p) => p.id === playerId);
-    if (player) player.role = role;
+    if (player) {
+      player.role = role ? role.toLowerCase() : null;
+      player.isReady = false;
+    }
   }
 
   toggleReady(playerId) {
     const player = this.players.find((p) => p.id === playerId);
-    if (player) player.isReady = !player.isReady;
+    if (player && player.team && player.role) {
+      player.isReady = !player.isReady;
+    }
   }
 
   getPlayer(socketId) {
-    return this.players.find((p) => {
-      console.log("compare:", p.socketId, socketId, p.socketId === socketId);
-      return p.socketId === socketId;
-    });
+    return this.players.find((p) => p.socketId === socketId);
   }
 
   canStartGame() {
+    if (this.players.length < 2) return false;
     const allReady = this.players.every((p) => p.isReady);
-
     const redSpymaster = this.players.some(
-      (p) => p.team === "red" && p.role === "spymaster"
+      (p) => p.team?.toLowerCase() === "red" && p.role?.toLowerCase() === "spymaster"
     );
     const blueSpymaster = this.players.some(
-      (p) => p.team === "blue" && p.role === "spymaster"
+      (p) => p.team?.toLowerCase() === "blue" && p.role?.toLowerCase() === "spymaster"
     );
 
-    // && redSpymaster && blueSpymaster;
+    return allReady && redSpymaster && blueSpymaster;
+  }
 
-    return allReady;
+  getStartGameError() {
+    if (this.players.length < 2) {
+      return "Need at least 2 players to start.";
+    }
+    const redSpymaster = this.players.some(
+      (p) => p.team?.toLowerCase() === "red" && p.role?.toLowerCase() === "spymaster"
+    );
+    const blueSpymaster = this.players.some(
+      (p) => p.team?.toLowerCase() === "blue" && p.role?.toLowerCase() === "spymaster"
+    );
+    if (!redSpymaster || !blueSpymaster) {
+      return "Each team (Red & Blue) must have a Spymaster.";
+    }
+    const unready = this.players.filter((p) => !p.isReady);
+    if (unready.length > 0) {
+      return "All players must select a team, role, and be Ready.";
+    }
+    return null;
   }
 
   // Optional: helper for teams

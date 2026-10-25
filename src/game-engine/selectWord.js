@@ -5,9 +5,10 @@ import { endTurn } from "./endTurn.js";
 export function selectWord(game, player, cardId) {
   // ❌ منع اللعب في مرحلة خاطئة
   if (
+    !player ||
     game.phase !== GAME_PHASES.GUESSING ||
-    player.team !== game.currentTurn ||
-    player.role.toUpperCase() === "SPYMASTER"
+    player.team?.toLowerCase() !== game.currentTurn?.toLowerCase() ||
+    player.role?.toLowerCase() === "spymaster"
   ) {
     return game;
   }

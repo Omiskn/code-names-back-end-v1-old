@@ -3,10 +3,12 @@ import { Server } from "socket.io";
 let io;
 
 export function initSocket(server) {
+  const allowedOrigin = process.env.CLIENT_URL || "*";
   io = new Server(server, {
     cors: {
-      origin: "*",
+      origin: allowedOrigin,
       methods: ["GET", "POST"],
+      credentials: true,
     },
   });
 

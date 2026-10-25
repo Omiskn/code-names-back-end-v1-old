@@ -2,31 +2,30 @@ import { GAME_PHASES } from "../constants.js";
 import { generateCurrentLog } from "../utils/generateLogs.js";
 
 export function applyClue(game, player, clueWord, number) {
-  // تحقق من صحة المرحلة
-  if (game.phase !== GAME_PHASES.SPYMASTER) {
-    if (
-      game.currentTurn !== player.team &&
-      player.role.toUpperCase() !== "SPYMASTER"
-    ) {
-      console.log(
-        "Cannot give clue in current phase : You are not spymaster Or not you team turn",
-      );
-
-      return game;
-    }
-
-    console.log("Cannot give clue in current phase");
+  if (
+    !player ||
+    game.phase !== GAME_PHASES.SPYMASTER ||
+    player.team?.toLowerCase() !== game.currentTurn?.toLowerCase() ||
+    player.role?.toLowerCase() !== "spymaster"
+  ) {
+    console.log("Cannot give clue: unauthorized role, wrong turn, or wrong phase");
     return game;
   }
 
-  const log = generateCurrentLog(player, clueWord);
+  const cleanClue = typeof clueWord === "string" ? clueWord.trim() : "";
+  const num = Number(number);
+  if (!cleanClue || isNaN(num) || num < 0 || num > 25) {
+    console.log("Invalid clue word or number");
+    return game;
+  }
+
+  const log = generateCurrentLog(player, cleanClue);
   game.logs.push(log);
 
-  // تعديل immutable
   return {
     ...game,
-    clue: clueWord,
-    guessesLeft: Number(number) + 1, // +1 للقانون الرسمي
+    clue: cleanClue,
+    guessesLeft: num + 1, // Official rules: clue number + 1 bonus guess
     phase: GAME_PHASES.GUESSING,
   };
 }
